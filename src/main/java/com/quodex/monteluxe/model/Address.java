@@ -16,7 +16,7 @@ public class Address {
 
     @Id
     @Column(name = "address_id", nullable = false, unique = true)
-    private String id = generateAddressId();
+    private String id ;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -39,5 +39,12 @@ public class Address {
     private String postalCode;
 
     private boolean isDefault;
+
+    @PrePersist
+    public void generateId(){
+        if(this.id == null || this.id.isEmpty()){
+            this.id = generateAddressId();
+        }
+    }
 
 }

@@ -1,4 +1,5 @@
-package com.quodex.monteluxe.jwt;
+package com.quodex.monteluxe.jwt;// JwtUtil.java
+
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -42,21 +43,20 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-
     public boolean validateToken(String token, UserDetails userDetails) {
         return (extractUsername(token).equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

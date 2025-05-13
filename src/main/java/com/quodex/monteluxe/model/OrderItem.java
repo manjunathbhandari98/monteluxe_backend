@@ -11,7 +11,6 @@ import lombok.*;
 public class OrderItem {
 
     private String productId;
-    private String productName;
     private int quantity;
     private double price;
 }

@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -59,6 +62,20 @@ public class JwtService {
         } catch (SignatureException e) {
             throw new RuntimeException("Invalid token signature", e);
         }
+    }
+
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+
+        // Ensure the "role" claim exists and is properly formatted
+        Object rolesObject = claims.get("role");
+        if (rolesObject instanceof List<?>) {
+            return ((List<?>) rolesObject).stream()
+                    .map(Object::toString) // Convert elements to String
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList(); // Return empty list if no roles are found
     }
 
     // Functional interface for extracting claims

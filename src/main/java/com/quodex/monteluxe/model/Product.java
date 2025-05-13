@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.List;
 
+import static com.quodex.monteluxe.util.IdGenerator.generateCategoryId;
 import static com.quodex.monteluxe.util.IdGenerator.generateProductCode;
 
 @Entity
@@ -17,7 +18,7 @@ public class Product {
 
     @Id
     @Column(name = "product_id")
-    private String id = generateProductCode();
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -46,25 +47,36 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private String case_size;
+    private String caseSize;
 
     @Column(nullable = false)
-    private String case_material;
+    private String caseMaterial;
 
     @Column(nullable = false)
-    private String crystal_type;
+    private String crystalType;
 
     @Column(nullable = false)
-    private String water_resistance;
+    private String waterResistance;
 
     @Column(nullable = false)
     private String movement;
 
     @Column(nullable = false)
-    private String strap_material;
+    private String strapMaterial;
 
     @ElementCollection
     @CollectionTable(name = "product_features", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "feature")
     private List<String> features; // Product features
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @PrePersist
+    public void generateId() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateProductCode();
+        }
+    }
 }

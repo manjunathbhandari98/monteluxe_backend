@@ -6,17 +6,19 @@ import lombok.*;
 import java.util.List;
 
 import static com.quodex.monteluxe.util.IdGenerator.generateCategoryId;
+import static com.quodex.monteluxe.util.IdGenerator.generateUserId;
 
 @Entity
 @Table(name = "categories")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {
 
     @Id
     @Column(name = "category_id", nullable = false, unique = true)
-    private String id = generateCategoryId();
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -34,5 +36,12 @@ public class Category {
     private String image;
 
     private String link;
+
+    @PrePersist
+    public void generateId() {
+        if (this.id == null || this.id.isEmpty()) {
+            this.id = generateCategoryId();
+        }
+    }
 
 }
